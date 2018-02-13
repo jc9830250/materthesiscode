@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="styles/codemirror.css">
+<link rel="stylesheet" href="styles/codemirror-neo.css">
+<link rel="stylesheet" href="styles/cy2neo.css">
+<link rel="stylesheet" href="styles/neod3.css">
+<link rel="stylesheet" href="styles/datatable.css">
+<link rel="stylesheet" href="styles/vendor.css"> <!-- bootstrap-->
+<link rel="stylesheet" href="styles/sweet-alert.css">
+<link rel="stylesheet" href="styles/gh-fork-ribbon.css">
+
+
+<title>明代文集社會網絡圖</title>
+</head>
+<body>
+ <select name="cypherselect" id="cypherselect" class="code select " onchange="changed(this)">
+   <option value="MATCH p=(n:personmingtest8)-[r:unknown]->(c:personmingtest8) RETURN p ;">社會網絡圖</option> 
+
+ <option value="MATCH p=(n:personmingtest8)-[r:writing{文集名:'陶學士集'}]->(c:personmingtest8) RETURN p ;">陶學士集</option>
+ <option value="MATCH p=(n:personmingtest8)-[r:writing{文集名:'邊華泉集'}]->(c:personmingtest8) RETURN p ;">邊華泉集</option>
+<option value="MATCH p=(n:personmingtest8)-[r:writing{文集名:'蘇門集'}]->(c:personmingtest8) RETURN p ;">蘇門集</option>
+<option value="MATCH p=(n:personmingtest8)-[r:writing{文集名:'登州集'}]->(c:personmingtest8) RETURN p ;">登州集</option>
+<option value="MATCH p=(n:personmingtest8)-[r{文集名:'滄螺集'}]->(c:personmingtest8) RETURN p ;">滄螺集</option>
+<option value="MATCH p=(n:personmingtest8)-[r:writing{文集名:'方齋詩文集'}]->(c:personmingtest8) RETURN p ;">方齋詩文集</option>
+ <option value="MATCH p= ()-[r ]->()  WHERE r.文集名='陶學士集' OR r.文集名='登州集' return p LIMIT 200;">陶學士集和登州集</option> 
+<option value="MATCH p=()-[r]->() WHERE r.文集名='蘇門集' OR r.文集名='邊華泉集'  RETURN p ,r ;">蘇門集和邊華泉集</option>
+
+ </select>
+<a href="./networkconfirm/" title="社會網絡編輯頁面" target="_blank"><i class="fa fa-link" aria-hidden="true"></i></a>      
+<a href="./2017社會網絡分析工具使用說明.pdf" title="使用說明" target="_blank">使用說明</a>
+<a href="#" title="Execute" id="execute"><i class="fa fa-play-circle-o"></i></a>
+
+       <div  style= " visibility: hidden";>
+  <input type="hidden" class="form-control" type="url" value="http://dev-neo4j.dlll.nccu.edu.tw:6661" id="neo4jUrl" type="hidden"/><br/>
+  <input type="hidden" class="form-control" type="text" size="8" value="neo4j" id="neo4jUser" type="hidden"/>
+  <input type="hidden" class="form-control" type="password" size="8" placeholder="password" value="neo4j" id="neo4jPass" /><br/>
+  <textarea name="cypher" id="cypher" rows="4" cols="60" data-lang="cypher" class="code form-control" >MATCH p=(n:personmingtest8)-[r:writing{文集名:'蘇門集'}]->(c:personmingtest8) RETURN p ;</textarea>
+
+  </div>
+
+<div role="tabpanel">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#graph" aria-controls="home" role="tab" data-toggle="tab">Graph</a></li>
+    <li role="presentation"><a href="#table" aria-controls="table" role="tab" data-toggle="tab">Table</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="graph">
+    	<div class="tab-pane active" id="graph">&nbsp;</div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="table">
+    	<div id="datatable"></div>
+    </div>
+  </div>
+
+ 
+
+</div>
+
+<script src="scripts/codemirror.js"></script>
+<script src="scripts/codemirror-cypher.js"></script>
+<script src="scripts/vendor.js"></script>
+<script src="scripts/sweet-alert.min.js"></script>
+<script src="scripts/neod3.js"></script>
+<script src="scripts/neod3-visualization.js"></script>
+<script src="scripts/neo4d3.js"></script>
+<script src="scripts/cy2neod3.js"></script>
+<script src="scripts/jquery.dataTables.min.js"></script>
+<script src="scripts/cypher.datatable.js"></script>
+
+
+
+<script type="text/javascript">
+var neo4j;
+var newquery;
+var theselect;
+var config = {}
+var theselectvalue;
+var connection = function() { return {url:$("#neo4jUrl").val(), user:$("#neo4jUser").val(),pass:$("#neo4jPass").val()}; }
+    $(document).ready(function() {
+		//todo dynamic configuration
+   new  Cy2NeoD3(config,"graph","datatable","cypher","execute", connection , true);
+   
+});
+function changed(theselect){
+      console.log(theselect.value);
+    //  $("pre").html('');
+      //if (theselect.value !="blank") {
+           // document.getElementById('cypher').value = "";
+           // $("pre").html("");
+            //document.getElementById('cypher').value = theselect.value;
+            document.getElementById('cypher').innerText = "";
+            document.getElementById('cypher').innerText =theselect.value;
+           Cy2NeoD3(config,"graph","datatable","cypher","execute", connection , true);
+
+     // }
+     
+         
+          }
+</script>
+
+</body>
+</html>
